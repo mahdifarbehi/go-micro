@@ -1,0 +1,27 @@
+package main
+
+import (
+	"encoding/json"
+	"net/http"
+)
+
+type jsonResponse struct {
+	Error   bool   `json:"error"`
+	Message string `json:"message"`
+	Data    any    `json:"data,omitempty"`
+}
+
+func (app *Config) broker(w http.ResponseWriter, r *http.Request) {
+	payload := jsonResponse{
+		Error:   false,
+		Message: "H it the broker",
+	}
+
+	out, _ := json.MarshalIndent(payload, "", "\t")
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusAccepted)
+	_, err := w.Write(out)
+	if err != nil {
+		http.Error(w, "failed to write response", http.StatusInternalServerError)
+	}
+}
